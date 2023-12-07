@@ -1,7 +1,11 @@
-[![Django CI](https://github.com/federicodabrunzo/django-one-instance/actions/workflows/django.yml/badge.svg?branch=workflow)](https://github.com/federicodabrunzo/django-one-instance/actions/workflows/django.yml)
-
 Django One Instance
 ===========
+
+[![build-status-image]][build-status]
+[![pypi-version]][pypi]
+![python-version][python-version]
+![django-version][django-version]
+
 Django One Instance is a Django app which enforces the use of a single entry for a given model (i.e.: singleton model). 
 
 The app provides an abstract model to extend which enforces the singleton models behaviour and an admin base class for registering the singleton models in the admin site.
@@ -81,3 +85,11 @@ Installation
         "one_instance",
     ]
     ```
+
+[build-status-image]: https://github.com/federicodabrunzo/django-one-instance/actions/workflows/django.yml/badge.svg?branch=dev
+[build-status]: https://github.com/federicodabrunzo/django-one-instance/actions/workflows/django.yml
+[pypi-version]: https://img.shields.io/pypi/v/django-one-instance.svg
+[pypi]: https://pypi.org/project/django-one-instance/
+[python-version]: https://img.shields.io/pypi/pyversions/django-one-instance
+[django-version]: https://img.shields.io/pypi/frameworkversions/django/django-one-instance
+
