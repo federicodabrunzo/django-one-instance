@@ -86,8 +86,8 @@ Installation
     ]
     ```
 
-[build-status-image]: https://github.com/federicodabrunzo/django-one-instance/actions/workflows/django.yml/badge.svg?branch=dev
-[build-status]: https://github.com/federicodabrunzo/django-one-instance/actions/workflows/django.yml
+[build-status-image]: https://github.com/federicodabrunzo/django-one-instance/actions/workflows/test-and-publish.yml/badge.svg?branch=dev
+[build-status]: https://github.com/federicodabrunzo/django-one-instance/actions/workflows/test-and-publish.yml
 [pypi-version]: https://img.shields.io/pypi/v/django-one-instance.svg
 [pypi]: https://pypi.org/project/django-one-instance/
 [python-version]: https://img.shields.io/pypi/pyversions/django-one-instance
