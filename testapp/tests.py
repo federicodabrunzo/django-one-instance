@@ -1,3 +1,4 @@
+from django.core import serializers
 from django.test import TestCase, override_settings
 
 from testapp.models import *
@@ -122,3 +123,28 @@ class SingletonNotSupportedTestCase(TestCase):
     def test_bulk_update_not_supported(self):
 
         self._test_not_supported('bulk_update')
+
+
+class SingletonModelInheritanceTestCase(TestCase):
+
+    fixtures = ['ModelInheritanceExample.json']
+
+    def test_singleton_with_model_inheritance(self):
+
+        obj = ModelInheritanceExample.objects.get()
+        self.assertEqual(obj.pk, 10)
+        self.assertEqual(ModelInheritanceExample.objects.count(), 1)
+
+    def test_extra_manager_method(self):
+
+        obj = ModelInheritanceExample.objects.get()
+        self.assertEqual(
+            ModelInheritanceExample.objects.as_json(), 
+            serializers.serialize('json', [obj]))
+
+    def test_extra_manager_method_from_queryset(self):
+        
+        obj = ModelInheritanceExample.objects.get()
+        self.assertEqual(
+            ModelInheritanceExample.objects.as_xml(), 
+            serializers.serialize('xml',  [obj]))

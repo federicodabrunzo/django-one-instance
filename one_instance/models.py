@@ -1,13 +1,89 @@
+import inspect
 import logging
 
+from types import MethodType
+
 from django.db import models
+from django.db.models.base import ModelBase
 from django.conf import settings
 
 logger = logging.getLogger(__name__)
 
+
+class SingletonModelBase(ModelBase):
+
+    @classmethod
+    def _get_to_copy_queryset_methods(cls, new_qs, queryset_class):
+
+        new_methods = {}
+        for name, method in inspect.getmembers(
+                queryset_class, predicate=inspect.isfunction
+            ):
+            # Only copy missing methods.
+            if hasattr(new_qs, name):
+                continue
+
+            # Only copy public methods or methods with the attribute `queryset_only=False`.
+            queryset_only = getattr(method, 'queryset_only', None)
+            if queryset_only or (queryset_only is None and name.startswith('_')):
+                continue
+
+            new_methods[name] = method
+        
+        return new_methods
+
+    @classmethod
+    def __prepare__(metacls, name, bases, **kwargs):
+
+        logger.debug(f'Preparing {name} class')
+
+        # Creates an 'objects' manager which includes the methods
+        # from each objects manager of each parent class (if any)
+
+        attrs = super().__prepare__(metacls, name, bases, **kwargs)
+        objects = SingletonModelManager.from_queryset(SingletonModelQuerySet)()
+        objects_qs = objects._queryset_class
+
+        for b in bases:            
+            if type(b) == ModelBase and 'objects' in b.__dict__:
+                b_objects = b._meta.managers_map['objects']
+                for name, method in inspect.getmembers(
+                    b_objects, predicate=inspect.ismethod
+                ):
+                    # Only copy missing methods.
+                    if hasattr(objects, name):
+                        continue
+
+                    logger.debug(
+                        f'Copying {name} method from {b.__name__} onto the manager')
+
+                    # Copy the method onto the manager.
+                    method.__func__.__qualname__ = \
+                        f'{type(objects).__name__}.{name}'
+                    setattr(objects, name, MethodType(method.__func__, objects))
+
+                    # If the base class objects manager has a custom queryset
+                    # we need to copy its methods on the new objects queryset
+
+                    if not hasattr(b_objects, '_queryset_class'):
+                        continue
+
+                    to_copy = metacls._get_to_copy_queryset_methods(
+                        objects_qs, b_objects._queryset_class).items()
+                    for k, v in to_copy:
+                        logger.debug(
+                            f'Copying {name} method from '
+                            f'{b_objects._queryset_class.__name__} onto the queryset')
+                        setattr(objects_qs, k, v)
+
+        attrs.update(objects=objects)
+        return attrs
+
+
 class SingletonModelAlreadyExists(Exception):
 
     pass
+
 
 class SingletonModelQuerySet(models.QuerySet):
 
@@ -77,9 +153,7 @@ class SingletonModelManager(models.Manager):
         return super().get_queryset().filter(pk__in=qs)
     
 
-class SingletonModel(models.Model):
-
-    objects = SingletonModelManager.from_queryset(SingletonModelQuerySet)()
+class SingletonModel(models.Model, metaclass=SingletonModelBase):
 
     class Meta:
         abstract = True

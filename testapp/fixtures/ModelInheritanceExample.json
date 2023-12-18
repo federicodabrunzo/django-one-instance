@@ -1,0 +1,52 @@
+[
+    {
+        "model": "testapp.modelinheritanceexample",
+        "pk": 1,
+        "fields": {}
+    },
+    {
+        "model": "testapp.modelinheritanceexample",
+        "pk": 2,
+        "fields": {}
+    },
+    {
+        "model": "testapp.modelinheritanceexample",
+        "pk": 3,
+        "fields": {}
+    },
+    {
+        "model": "testapp.modelinheritanceexample",
+        "pk": 4,
+        "fields": {}
+    },
+    {
+        "model": "testapp.modelinheritanceexample",
+        "pk": 5,
+        "fields": {}
+    },
+    {
+        "model": "testapp.modelinheritanceexample",
+        "pk": 6,
+        "fields": {}
+    },
+    {
+        "model": "testapp.modelinheritanceexample",
+        "pk": 7,
+        "fields": {}
+    },
+    {
+        "model": "testapp.modelinheritanceexample",
+        "pk": 8,
+        "fields": {}
+    },
+    {
+        "model": "testapp.modelinheritanceexample",
+        "pk": 9,
+        "fields": {}
+    },
+    {
+        "model": "testapp.modelinheritanceexample",
+        "pk": 10,
+        "fields": {}
+    }
+]

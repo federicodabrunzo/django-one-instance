@@ -75,6 +75,33 @@ if you try to forcefully get one of the other instances, you get an error
 TypeError: You should use get() method without any arguments. Set DJANGO_ONE_STRICT=False if you want to silently drop the unneeded arguments.
 ```
 
+### Model inheritance
+The `objects` manager of the singleton model will include the custom methods from each objects manager of each parent class (if any).
+
+```python
+class ManagerA(models.Manager):
+
+    def as_json(self):
+        return serializers.serialize("json", self.all())
+
+class ExtraManagerA(models.Model):
+
+    objects = ManagerA()
+
+    class Meta:
+        abstract = True
+
+class ModelInheritanceExample(SingletonModel, ExtraManagerA):
+
+    pass
+```
+```
+>>> models.ModelInheritanceExample.objects.get()
+<ModelInheritanceExample: ModelInheritanceExample object (1)>
+>>> models.ModelInheritanceExample.objects.as_json()
+'[{"model": "testapp.modelinheritanceexample", "pk": 1, "fields": {}}]'
+```
+
 Installation
 -----------
 - `pip install django-one-instance`
@@ -86,8 +113,8 @@ Installation
     ]
     ```
 
-[build-status-image]: https://github.com/federicodabrunzo/django-one-instance/actions/workflows/django.yml/badge.svg?branch=dev
-[build-status]: https://github.com/federicodabrunzo/django-one-instance/actions/workflows/django.yml
+[build-status-image]: https://github.com/federicodabrunzo/django-one-instance/actions/workflows/test-and-publish.yml/badge.svg?branch=dev
+[build-status]: https://github.com/federicodabrunzo/django-one-instance/actions/workflows/test-and-publish.yml
 [pypi-version]: https://img.shields.io/pypi/v/django-one-instance.svg
 [pypi]: https://pypi.org/project/django-one-instance/
 [python-version]: https://img.shields.io/pypi/pyversions/django-one-instance
