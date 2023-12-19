@@ -1,0 +1,17 @@
+[
+    {
+        "model": "testapp.preexistingmodelexample",
+        "pk": 1,
+        "fields": {}
+    },
+    {
+        "model": "testapp.preexistingmodelexample",
+        "pk": 2,
+        "fields": {}
+    },
+    {
+        "model": "testapp.preexistingmodelexample",
+        "pk": 3,
+        "fields": {}
+    }
+]

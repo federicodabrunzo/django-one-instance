@@ -66,3 +66,10 @@ class ExtraManagerB(models.Model):
 class ModelInheritanceExample(SingletonModel, ExtraManagerA, ExtraManagerB):
 
     pass
+
+
+class PreExistingModelExample(SingletonModel):
+
+    class Meta:
+
+        singleton_pk = 2

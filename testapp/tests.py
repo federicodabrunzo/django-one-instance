@@ -148,3 +148,17 @@ class SingletonModelInheritanceTestCase(TestCase):
         self.assertEqual(
             ModelInheritanceExample.objects.as_xml(), 
             serializers.serialize('xml',  [obj]))
+
+
+class SingletonPreExistingModelTestCase(TestCase):
+
+    fixtures = ['PreExistingModelExample.json']
+
+    def test_get_fixed_pk(self):
+        self.assertEqual(PreExistingModelExample.objects.get().pk, 2)
+        PreExistingModelExample._meta.singleton_pk = 1
+        self.assertEqual(PreExistingModelExample.objects.get().pk, 1)
+
+    def test_get_non_fixed_pk(self):
+        delattr(PreExistingModelExample._meta, 'singleton_pk')
+        self.assertEqual(PreExistingModelExample.objects.get().pk, 3)

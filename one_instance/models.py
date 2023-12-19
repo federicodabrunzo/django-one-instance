@@ -149,7 +149,12 @@ class SingletonModelQuerySet(models.QuerySet):
 class SingletonModelManager(models.Manager):
 
     def get_queryset(self):
-        qs = super().get_queryset().order_by('-pk')[0:1]
+        qs = super().get_queryset()
+
+        if getattr(self.model._meta, 'singleton_pk', None) is not None:
+            qs = qs.filter(pk__in=[self.model._meta.singleton_pk])
+        else:
+            qs = qs.order_by('-pk')[0:1]
         return super().get_queryset().filter(pk__in=qs)
     
 

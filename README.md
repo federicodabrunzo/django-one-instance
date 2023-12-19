@@ -55,23 +55,32 @@ one_instance.models.SingletonModelAlreadyExists: You are receiving this error af
 ```
 
 ### Pre-existing model
-If you extend the SingletonModel for a pre-existing model with many instances, the default get() behaviour is to return the last entry which becames the singleton object.
+If you extend the SingletonModel for a pre-existing model with many instances, the default get() behaviour is to return the last entry which becames the singleton object. Alternatively, you can explicitly provide the pk of the instance to use with the `Meta` option `singleton_pk`.
+
+```python
+class PreExistingModelExample(SingletonModel):
+
+    class Meta:
+
+        singleton_pk = 2
 ```
->>> Config.objects.get()
-<Config: Config object (3)>
+
+```django
+>>> PreExistingModelExample.objects.get()
+<PreExistingModelExample: PreExistingModelExample object (2)>
 ```
 the other entries are hidden by the manager
-```
->>> Config.objects.all()
-<SingletonModelQuerySet [<Config: Config object (3)>]>
->>> Config.objects.first()
-<Config: Config object (3)>
->>> Config.objects.last()
-<Config: Config object (3)>
+```django
+>>> PreExistingModelExample.objects.all()
+<SingletonModelQuerySet [<PreExistingModelExample: PreExistingModelExample object (2)>]>
+>>> PreExistingModelExample.objects.first()
+<PreExistingModelExample: PreExistingModelExample object (2)>
+>>> PreExistingModelExample.objects.last()
+<PreExistingModelExample: PreExistingModelExample object (2)>
 ```
 if you try to forcefully get one of the other instances, you get an error
 ```
->>> Config.objects.get(pk=1)
+>>> PreExistingModelExample.objects.get(pk=1)
 TypeError: You should use get() method without any arguments. Set DJANGO_ONE_STRICT=False if you want to silently drop the unneeded arguments.
 ```
 
@@ -95,7 +104,7 @@ class ModelInheritanceExample(SingletonModel, ExtraManagerA):
 
     pass
 ```
-```
+```django
 >>> models.ModelInheritanceExample.objects.get()
 <ModelInheritanceExample: ModelInheritanceExample object (1)>
 >>> models.ModelInheritanceExample.objects.as_json()
