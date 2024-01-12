@@ -1,3 +1,4 @@
+from django.core import serializers
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
@@ -30,3 +31,45 @@ class SMTPConfigs(SingletonModel):
                                   verbose_name=_('Use SSL'))
 
     from_email = models.EmailField(verbose_name=_('From Email'))
+
+
+class ManagerA(models.Manager):
+
+    def as_json(self):
+        return serializers.serialize("json", self.all())
+
+class ExtraManagerA(models.Model):
+
+    objects = ManagerA()
+
+    class Meta:
+        abstract = True
+
+
+class ManagerBQuerySet(models.QuerySet):
+
+    def as_xml(self):
+        return serializers.serialize("xml", self.all())
+
+class ManagerB(models.Manager):
+
+    pass
+
+class ExtraManagerB(models.Model):
+
+    objects = ManagerB.from_queryset(ManagerBQuerySet)()
+
+    class Meta:
+        abstract = True
+
+
+class ModelInheritanceExample(SingletonModel, ExtraManagerA, ExtraManagerB):
+
+    pass
+
+
+class PreExistingModelExample(SingletonModel):
+
+    class Meta:
+
+        singleton_pk = 2
